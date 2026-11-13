@@ -9,6 +9,22 @@
 
 namespace po = boost::program_options;
 
+std::ostream& operator<<(std::ostream& os, const config::Map& map) {
+	os << "{\n";
+
+	for (const auto& [key, value] : map) {
+		os << ' ' << key << " = ";
+
+		std::visit([&os](const auto& v) {
+			os << v;
+		}, value);
+
+		os << '\n';
+	}
+
+	return os << '}';
+}
+
 int main(int argc, char* argv[]) {
 	po::options_description options("Options");
 	options.add_options()
@@ -54,6 +70,7 @@ int main(int argc, char* argv[]) {
 		std::cout << cfg.get<std::string>("host") << '\n';
 		std::cout << cfg.get<int>("port") << '\n';
 		std::cout << cfg.get<bool>("debug") << '\n';
+		std::cout << cfg.values() << '\n';
 	} catch (const std::exception& e) {
 		std::cerr << "Error: " << e.what() << '\n';
 		return 1;

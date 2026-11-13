@@ -6,10 +6,11 @@
 
 namespace config {
 	using Value = std::variant<std::string, bool, int, unsigned, long long, double>;
+	using Map = std::unordered_map<std::string, Value>;
 
 	class Config {
 	private:
-		std::unordered_map<std::string, Value> values_;
+		Map values_;
 	public:
 		template <typename T>
 		void add(const std::string& name, const T& defaultValue);
@@ -20,7 +21,7 @@ namespace config {
 
 		bool contains(const std::string& name) const;
 
-		const std::unordered_map<std::string, Value>& values() const;
+		const Map& values() const;
 
 		template <typename T>
 		T get(const std::string& name) const;

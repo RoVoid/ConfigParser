@@ -66,7 +66,7 @@ namespace config {
 		return values_.contains(name);
 	}
 
-	const std::unordered_map<std::string, Value>& Config::values() const {
+	const Map& Config::values() const {
 		return values_;
 	}
 
