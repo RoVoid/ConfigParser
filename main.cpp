@@ -2,7 +2,6 @@
 
 #include <boost/program_options.hpp>
 
-#include <filesystem>
 #include <iostream>
 #include <regex>
 #include <vector>
@@ -10,7 +9,7 @@
 namespace po = boost::program_options;
 
 std::ostream& operator<<(std::ostream& os, const config::Map& map) {
-	os << "{\n";
+	os << std::boolalpha << "{\n";
 
 	for (const auto& [key, value] : map) {
 		os << ' ' << key << " = ";
@@ -53,8 +52,11 @@ int main(int argc, char* argv[]) {
 
 	try {
 		const auto path = args["config"].as<std::string>();
-		if (std::filesystem::exists(path)) cfg.load(path);
-		else std::cerr << "Warning: config file not found: " << path << " - using defaults\n";
+		try {
+			cfg.load(path);
+		} catch (const config::OpenError&) {
+			std::cerr << "Warning: config file not found: " << path << " - using defaults\n";
+		}
 
 		if (args.contains("set")) {
 			const std::regex pattern(R"(^\s*([^=\s]+)\s*=\s*(.*?)\s*$)");
