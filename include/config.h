@@ -11,6 +11,8 @@ namespace config {
 	class Config {
 	private:
 		Map values_;
+
+		void setNoThrow(const std::string& name, const std::string& text);
 	public:
 		template <typename T>
 		void add(const std::string& name, const T& defaultValue);

@@ -1,9 +1,9 @@
 #include "config.h"
 
-#include <charconv>
+#include <charconv> // чтоб из текста вытащить число
 #include <fstream>
 #include <stdexcept>
-#include <type_traits>
+#include <type_traits> // для проверки типов
 
 namespace config {
 	namespace {
@@ -49,13 +49,22 @@ namespace config {
 			const auto pos = line.find('=');
 			if (pos == std::string::npos) throw std::runtime_error("Invalid line in " + filename + ": " + line);
 
-			set(trim(line.substr(0, pos)), trim(line.substr(pos + 1)));
+			setNoThrow(trim(line.substr(0, pos)), trim(line.substr(pos + 1)));
 		}
 	}
 
 	void Config::set(const std::string& name, const std::string& text) {
 		auto it = values_.find(name);
 		if (it == values_.end()) throw std::runtime_error("Unknown key: " + name);
+
+		std::visit([&](auto& value) {
+			value = parse<std::decay_t<decltype(value)>>(name, text);
+		}, it->second);
+	}
+
+	void Config::setNoThrow(const std::string& name, const std::string& text) {
+		auto it = values_.find(name);
+		if (it == values_.end()) return;
 
 		std::visit([&](auto& value) {
 			value = parse<std::decay_t<decltype(value)>>(name, text);
