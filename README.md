@@ -51,7 +51,7 @@ debug = true
 ## Библиотека
 
 ```cpp
-#include "config.h"
+#include <config/config.h>
 
 config::Config cfg;
 cfg.add<std::string>("host", "127.0.0.1");
@@ -87,9 +87,13 @@ int port = cfg.get<int>("port");
 
 ```
 ConfigParser/
-├── CMakeLists.txt
-├── config.ini          пример конфигурации
-├── main.cpp
-├── include/config.h    интерфейс библиотеки
-└── src/config.cpp      реализация
+├── CMakeLists.txt               корень: общие настройки и add_subdirectory
+├── config/                      библиотека config (target config::config)
+│   ├── CMakeLists.txt
+│   ├── include/config.h         интерфейс библиотеки
+│   └── src/config.cpp           реализация
+└── app/                         исполняемый ConfigParser (здесь же подключается Boost)
+    ├── CMakeLists.txt
+    ├── main.cpp
+    └── config.ini               пример конфигурации, копируется рядом с exe
 ```

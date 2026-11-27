@@ -1,4 +1,4 @@
-#include "config.h"
+#include <config.h>
 
 #include <charconv> // чтоб из текста вытащить число
 #include <fstream>
